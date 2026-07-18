@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/MyPortfolio/', // required for GitHub Pages
+  // Vercel serves from root; GitHub Pages needs the repo subpath
+  base: process.env.VERCEL ? '/' : '/MyPortfolio/',
   plugins: [react()],
   server: {
     proxy: {
