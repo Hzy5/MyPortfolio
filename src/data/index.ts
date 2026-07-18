@@ -45,6 +45,7 @@ export const EXPERTISE_AREAS = [
 ]
 
 export const PROJECTS = [
+  { name: 'Verifind Marketplace', role: 'Senior Software Engineer', desc: 'Multi-vendor marketplace with vetted sellers, social discovery feed, and admin-managed listings.', tech: ['React Native', 'Firebase', 'Node.js'], appStore: 'https://apps.apple.com/us/app/verifind-marketplace/id6739537089', playStore: 'https://play.google.com/store/apps/details?id=com.verifindapp.app&hl=en' },
   { name: 'Authentic Detective', role: 'Senior Software Engineer', desc: 'Platform for fashion enthusiasts and luxury brand connoisseurs.', tech: ['React Native', 'Swift', 'Kotlin'], appStore: 'https://apps.apple.com/us/app/authentic-detective/id1659681647', playStore: 'https://play.google.com/store/apps/details?id=com.techificent.authenticdetetctive&hl=en' },
   { name: 'Remember RQR', role: 'Senior Software Engineer', desc: 'Honor veterans by creating detailed profiles with metal QR codes on gravestones.', tech: ['Swift', 'Kotlin', 'QR Code'], appStore: null, playStore: 'https://play.google.com/store/apps/details?id=com.remember.rqr&hl=en', screenshotSource: 'playstore' as const },
   { name: 'BlogTo', role: 'Senior Software Engineer', desc: 'Find the best Toronto restaurants, bars, and places. Best of Toronto lists.', tech: ['Swift', 'Google APIs', 'FCM'], appStore: 'https://apps.apple.com/ca/app/blogto/id435310228', playStore: 'https://play.google.com/store/apps/details?id=com.freshdaily.blogto&hl=en' },

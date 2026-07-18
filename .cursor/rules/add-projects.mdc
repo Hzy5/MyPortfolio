@@ -1,0 +1,14 @@
+---
+description: How to add apps to the Projects page data source
+globs: src/data/index.ts,src/pages/Projects.tsx
+alwaysApply: false
+---
+
+# Adding Projects
+
+Portfolio apps live in `src/data/index.ts` → `PROJECTS`.
+
+- Apps with `appStore` / `playStore` / `screenshotSource` appear in the main grid
+- Apps with no store links appear under "Other Projects"
+- Prefer accurate `tech`, short `desc`, and real store URLs only
+- Optional media fields: `screenshotSource: 'playstore' | 'website'`, `screenshotUrl` for websites
