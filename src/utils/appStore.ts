@@ -32,8 +32,9 @@ async function fetchScreenshotsFromAppStorePage(appStoreUrl: string | null): Pro
   if (!appStoreUrl) return []
   try {
     const url = new URL(appStoreUrl)
-    const path = url.pathname
-    const fetchUrl = import.meta.env.DEV ? `/api/appstore${path}` : appStoreUrl
+    const fetchUrl = import.meta.env.DEV
+      ? `/api/appstore${url.pathname}${url.search}`
+      : `/api/proxy?url=${encodeURIComponent(appStoreUrl)}`
     const res = await fetch(fetchUrl, { mode: 'cors' })
     const html = await res.text()
     // Match mzstatic URLs that contain "Screenshot" or "Store_Graphic(s)" and use the {w}x{h}{c}.{f} template

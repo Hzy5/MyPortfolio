@@ -19,14 +19,23 @@ export interface ProjectWithMedia {
   screenshotUrl?: string
 }
 
+/** Dev uses Vite proxies; production uses the Vercel /api/proxy function. */
+function htmlFetchUrl(absoluteUrl: string, viteProxyPrefix: string): string {
+  if (import.meta.env.DEV) {
+    const url = new URL(absoluteUrl)
+    return `${viteProxyPrefix}${url.pathname}${url.search}`
+  }
+  return `/api/proxy?url=${encodeURIComponent(absoluteUrl)}`
+}
+
 /**
  * Fetch screenshots from a website (e.g. vesselhealth.com)
  */
 async function fetchScreenshotsFromWebsite(url: string | null): Promise<string[]> {
   if (!url) return []
   try {
-    const fetchUrl = import.meta.env.DEV && url.includes('vesselhealth.com')
-      ? url.replace('https://vesselhealth.com', '/api/vessel')
+    const fetchUrl = url.includes('vesselhealth.com')
+      ? htmlFetchUrl(url, '/api/vessel')
       : url
     const res = await fetch(fetchUrl, { mode: 'cors' })
     const html = await res.text()
@@ -59,9 +68,7 @@ async function fetchPlayStoreMedia(playStoreUrl: string | null): Promise<{ icon:
   const empty = { icon: '', screenshots: [] }
   if (!playStoreUrl) return empty
   try {
-    const url = new URL(playStoreUrl)
-    const path = url.pathname + url.search
-    const fetchUrl = import.meta.env.DEV ? `/api/playstore${path}` : playStoreUrl
+    const fetchUrl = htmlFetchUrl(playStoreUrl, '/api/playstore')
     const res = await fetch(fetchUrl, { mode: 'cors' })
     const html = await res.text()
 
@@ -144,15 +151,36 @@ export async function fetchProjectMedia(project: ProjectWithMedia | null): Promi
     }
   }
 
-  // 3. App Store (default) - Drive Roadside, etc.
+  // 3. App Store (default) — fall back to Play Store when iTunes has no screenshots
   if (project.appStore) {
     const data = await fetchAppStoreMedia(project.appStore)
-    if (!data) return null
-    return {
-      icon: data.icon,
-      screenshots: data.screenshots,
-      description: data.description,
+    if (data?.screenshots.length) {
+      return {
+        icon: data.icon,
+        screenshots: data.screenshots,
+        description: data.description,
+      }
     }
+
+    if (project.playStore) {
+      const play = await fetchPlayStoreMedia(project.playStore)
+      if (play.screenshots.length || play.icon) {
+        return {
+          icon: data?.icon || play.icon,
+          screenshots: play.screenshots,
+          description: data?.description || project.desc,
+        }
+      }
+    }
+
+    if (data) {
+      return {
+        icon: data.icon,
+        screenshots: data.screenshots,
+        description: data.description,
+      }
+    }
+    return null
   }
 
   // 4. Play Store only, no explicit screenshotSource - try Play Store fallback
